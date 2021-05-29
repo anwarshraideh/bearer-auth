@@ -14,8 +14,9 @@ const users = new mongoose.Schema({
 users.virtual('token').get(function () {
   let tokenObject = {
     username: this.username,
+    test:'test',
   };
-  return jwt.sign(tokenObject, process.env.SECRET, { expiresIn: '1h' });
+  return jwt.sign(tokenObject, process.env.SECRET, { expiresIn: '15m' });
 });
 
 users.pre('save', async function () {
@@ -26,16 +27,16 @@ users.pre('save', async function () {
 
 // BASIC AUTH
 users.statics.authenticateBasic = async function (username, password) {
-  try {
-    const user = await this.findOne({ username });
-    const valid = await bcrypt.compare(password, user.password);
-    if (valid) {
-      return user;
-    }
-    throw new Error('Invalid User');
-  } catch (error) {
-    throw new Error('Invalid User');
+  // try {
+  const user = await this.findOne({ username });
+  const valid = await bcrypt.compare(password, user.password);
+  if (valid) {
+    return user;
   }
+  throw new Error('Invalid User');
+  // } catch (error) {
+  //   throw new Error('Invalid User');
+  // }
 };
 
 // BEARER AUTH

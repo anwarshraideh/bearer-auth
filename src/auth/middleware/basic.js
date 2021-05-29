@@ -5,11 +5,12 @@ const User = require('../models/users.js');
 
 module.exports = async (req, res, next) => {
   if (!req.headers.authorization) {
-    return next('Invalid Token');
+    next('Invalid Token');
   }
 
   let basic = req.headers.authorization.split(' ').pop();
   let [user, pass] = base64.decode(basic).split(':');
+  
   try {
     req.user = await User.authenticateBasic(user, pass);
     if (req.user) {
